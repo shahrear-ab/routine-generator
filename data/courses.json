@@ -1,0 +1,107 @@
+[
+  {
+    "title": "Introduction to Mechanical Engineering",
+    "short_code": "ME 101",
+    "credit_hours": 3.0,
+    "required_duration": 1,
+    "required_room_type": "General Classroom"
+  },
+  {
+    "title": "Differential Calculus, Solid Geometry & Vector Analysis",
+    "short_code": "MATH 161",
+    "credit_hours": 4.0,
+    "required_duration": 1,
+    "required_room_type": ""
+  },
+  {
+    "title": "Waves and Oscillation, Geometrical Optics, Wave Mechanics",
+    "short_code": "PHY 159",
+    "credit_hours": 3.0,
+    "required_duration": 1,
+    "required_room_type": "General Classroom"
+  },
+  {
+    "title": "Integral Calculus, Differential Equations",
+    "short_code": "MATH 163",
+    "credit_hours": 4.0,
+    "required_duration": 1,
+    "required_room_type": "General Classroom"
+  },
+  {
+    "title": "Chemistry of Engineering Materials",
+    "short_code": "CHEM 141",
+    "credit_hours": 3.0,
+    "required_duration": 1,
+    "required_room_type": "General Classroom"
+  },
+  {
+    "title": "Computer Programming Language",
+    "short_code": "ME 171",
+    "credit_hours": 3.0,
+    "required_duration": 1,
+    "required_room_type": "General Classroom"
+  },
+  {
+    "title": "Computer Programming Language Sessional",
+    "short_code": "ME 172",
+    "credit_hours": 1.5,
+    "required_duration": 2,
+    "required_room_type": "Computer Lab"
+  },
+  {
+    "title": "Physics Sessional",
+    "short_code": "PHY 102",
+    "credit_hours": 1.5,
+    "required_duration": 2,
+    "required_room_type": "Theory Lab"
+  },
+  {
+    "title": "Foundry and Welding",
+    "short_code": "SHOP 160",
+    "credit_hours": 0.75,
+    "required_duration": 2,
+    "required_room_type": "Theory Lab"
+  },
+  {
+    "title": "Machine Shop Practice",
+    "short_code": "SHOP 170",
+    "credit_hours": 0.75,
+    "required_duration": 2,
+    "required_room_type": "Theory Lab"
+  },
+  {
+    "title": "Fundamentals of Electrical Engineering",
+    "short_code": "EEE 159",
+    "credit_hours": 3.0,
+    "required_duration": 1,
+    "required_room_type": "General Classroom"
+  },
+  {
+    "title": "Fundamentals of Electrical Engineering Sessional",
+    "short_code": "EEE 160",
+    "credit_hours": 0.75,
+    "required_duration": 2,
+    "required_room_type": "Theory Lab"
+  },
+  {
+    "title": "Structure of Matter, Electricity, Magnetism, and Modern Physics",
+    "short_code": "PHY 105",
+    "credit_hours": 3.0,
+    "required_duration": 1,
+    "required_room_type": "General Classroom"
+  },
+  {
+    "title": "Chemistry I ",
+    "short_code": "CHEM 109",
+    "credit_hours": 3.0,
+    "required_duration": 1,
+    "required_room_type": "General Classroom"
+  },
+  {
+    "title": "Inorganic Quantitative Analysis",
+    "short_code": "CHEM 114",
+    "credit_hours": 1.5,
+    "required_duration": 2,
+    "required_room_type": "Theory Lab"
+  }
+]
