@@ -1,15 +1,5 @@
 [
   {
-    "full_name": "Dr. Aloke Kumar Mozumder",
-    "short_name": "AKM",
-    "seniority_level": 3,
-    "rank": "Professor",
-    "max_hours_per_week": 16,
-    "max_hours_per_day": 4,
-    "dept_name": "ME",
-    "preferred_time_slots": []
-  },
-  {
     "full_name": "Dr. Mohammad Mamun",
     "short_name": "MM",
     "seniority_level": 2,
@@ -160,13 +150,26 @@
     "preferred_time_slots": []
   },
   {
-    "full_name": "Dr. Abdul Halim Bhuiyan",
-    "short_name": "AHB",
+    "full_name": "Sumon Abu Bakar",
+    "short_name": "SAB",
     "seniority_level": 2,
-    "rank": "Associate Prof",
-    "max_hours_per_week": 18,
-    "max_hours_per_day": 4,
-    "dept_name": "Mathematics",
-    "preferred_time_slots": []
+    "rank": "Lecturer",
+    "max_hours_per_week": 22,
+    "max_hours_per_day": 5,
+    "dept_name": "ME",
+    "preferred_time_slots": [
+      {
+        "start_time": "08:00",
+        "end_time": "08:50"
+      },
+      {
+        "start_time": "09:00",
+        "end_time": "09:50"
+      },
+      {
+        "start_time": "10:00",
+        "end_time": "10:50"
+      }
+    ]
   }
 ]

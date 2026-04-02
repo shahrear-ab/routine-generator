@@ -96,15 +96,14 @@ class RoutineGenerator:
             self.routine.conflicts.append("ERROR: No course assignments defined. Please assign courses to sections and teachers first.")
             return self.routine
         
-        # Ensure seniority is unique within each rank+department to avoid ambiguity
+        # Ensure seniority is unique within each rank to avoid ambiguity
         self._validate_unique_seniority_levels()
         generation_messages.extend(self._validate_theory_sessions_against_credit_hours())
 
-        # Sort teachers by rank priority, then by seniority (higher = higher priority)
+        # Sort teachers by rank first, then by seniority where 1 is highest priority.
         sorted_teachers = sorted(
             self.teachers,
-            key=lambda t: (self.RANK_PRIORITY.get(t.rank, 0), t.seniority_level),
-            reverse=True
+            key=lambda t: (-self.RANK_PRIORITY.get(t.rank, 0), t.seniority_level)
         )
         
         # Generate available time slots
@@ -118,14 +117,8 @@ class RoutineGenerator:
         manual_assignments = [a for a in self.course_assignments if a.scheduled_slots]
         auto_assignments = [a for a in self.course_assignments if not a.scheduled_slots]
 
-        manual_assignments.sort(
-            key=lambda a: self._teacher_priority_value(a.teacher_short_name),
-            reverse=True
-        )
-        auto_assignments.sort(
-            key=lambda a: self._teacher_priority_value(a.teacher_short_name),
-            reverse=True
-        )
+        manual_assignments.sort(key=lambda a: self._teacher_priority_value(a.teacher_short_name))
+        auto_assignments.sort(key=lambda a: self._teacher_priority_value(a.teacher_short_name))
 
         expanded_manual = self._expand_assignments_for_subsections(manual_assignments)
         expanded_auto = self._expand_assignments_for_subsections(auto_assignments)
@@ -332,17 +325,14 @@ class RoutineGenerator:
         return self.routine
     
     def _validate_unique_seniority_levels(self):
-        """Ensure seniority levels are unique within each rank and department."""
-        seen_by_rank_and_dept: Dict[Tuple[str, str], Set[int]] = {}
+        """Ensure seniority levels are unique within each rank."""
+        seen_by_rank: Dict[str, Set[int]] = {}
         for teacher in self.teachers:
-            dept_key = self._normalize_dept_name(getattr(teacher, "dept_name", ""))
-            lookup_key = (teacher.rank, dept_key)
-            seen = seen_by_rank_and_dept.setdefault(lookup_key, set())
+            seen = seen_by_rank.setdefault(teacher.rank, set())
             if teacher.seniority_level in seen:
-                dept_label = dept_key if dept_key else "(No Dept)"
                 self.routine.conflicts.append(
-                    f"Duplicate seniority level {teacher.seniority_level} found for rank {teacher.rank} in dept {dept_label}. "
-                    f"Seniority levels should be unique within each rank and department."
+                    f"Duplicate seniority level {teacher.seniority_level} found for rank {teacher.rank}. "
+                    f"Seniority levels should be unique within each rank."
                 )
             else:
                 seen.add(teacher.seniority_level)
@@ -435,7 +425,7 @@ class RoutineGenerator:
         teacher_daily_hours: Dict[str, Dict[str, int]]
     ) -> bool:
         """Check if assigning a class would exceed weekly or daily teacher load limits."""
-        max_weekly = teacher.max_hours_per_week
+        max_weekly = self.TEACHER_LOADS.get(teacher.rank, teacher.max_hours_per_week)
         max_daily = teacher.max_hours_per_day or self.TEACHER_DAILY_LOADS.get(teacher.rank, 4)
         if teacher_hours[teacher.short_name] + duration_hours > max_weekly:
             return False
@@ -479,15 +469,15 @@ class RoutineGenerator:
             reverse=True
         )
 
-    def _teacher_priority_value(self, teacher_short_name: str) -> Tuple[int, str, int]:
-        """Return priority tuple for ordering (rank_priority, dept_name, seniority_level)."""
+    def _teacher_priority_value(self, teacher_short_name: str) -> Tuple[int, int, str]:
+        """Return priority tuple for ordering (rank first, then lower seniority level)."""
         teacher = next((t for t in self.teachers if t.short_name == teacher_short_name), None)
         if not teacher:
-            return (0, "", 0)
+            return (0, 10**9, teacher_short_name)
         return (
-            self.RANK_PRIORITY.get(teacher.rank, 0),
-            self._normalize_dept_name(getattr(teacher, "dept_name", "")),
-            teacher.seniority_level
+            -self.RANK_PRIORITY.get(teacher.rank, 0),
+            teacher.seniority_level,
+            teacher.short_name
         )
 
     def _has_higher_priority(self, incoming_teacher_short_name: str, existing_teacher_short_name: str) -> bool:
@@ -502,12 +492,7 @@ class RoutineGenerator:
         if incoming_rank != existing_rank:
             return incoming_rank > existing_rank
 
-        incoming_dept = self._normalize_dept_name(getattr(incoming_teacher, "dept_name", ""))
-        existing_dept = self._normalize_dept_name(getattr(existing_teacher, "dept_name", ""))
-        if incoming_dept != existing_dept:
-            return False
-
-        return incoming_teacher.seniority_level > existing_teacher.seniority_level
+        return incoming_teacher.seniority_level < existing_teacher.seniority_level
 
     def _remove_entry(self, entry: RoutineEntry):
         """Remove an entry from the routine and internal schedules."""

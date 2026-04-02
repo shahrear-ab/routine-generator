@@ -375,14 +375,14 @@ def render_teachers(data: Dict[str, List]) -> None:
 	left, right = st.columns([1, 1.2])
 	with left:
 		st.subheader("Add Teacher")
+		add_teacher_rank = st.selectbox("Rank", list(RANK_LOADS.keys()), key="add_teacher_rank")
+		weekly_default, daily_default = RANK_LOADS[add_teacher_rank]
+		st.caption(f"Max Hours / Week (Fixed by Rank): {int(weekly_default)}")
 		with st.form("add_teacher_form"):
 			full_name = st.text_input("Full Name")
 			short_name = st.text_input("Short Name")
 			dept_name = st.text_input("Department")
-			rank = st.selectbox("Rank", list(RANK_LOADS.keys()))
-			weekly_default, daily_default = RANK_LOADS[rank]
 			seniority = st.number_input("Seniority Level", min_value=1, step=1, value=1)
-			max_hours_week = st.number_input("Max Hours / Week", min_value=1, step=1, value=weekly_default)
 			max_hours_day = st.number_input("Max Hours / Day", min_value=1, step=1, value=daily_default)
 			preferred_raw = st.text_input("Preferred Slots (comma-separated: 1st,2nd,3rd)")
 			submitted = st.form_submit_button("Add Teacher", use_container_width=True)
@@ -390,6 +390,8 @@ def render_teachers(data: Dict[str, List]) -> None:
 		if submitted:
 			if not full_name.strip() or not short_name.strip():
 				st.error("Full Name and Short Name are required.")
+			elif any(t.rank == add_teacher_rank and int(t.seniority_level) == int(seniority) for t in teachers):
+				st.error(f"Seniority {int(seniority)} is already used for rank {add_teacher_rank}. Choose a unique seniority level.")
 			else:
 				preferred_slots = []
 				for token in [part.strip() for part in preferred_raw.split(",") if part.strip()]:
@@ -401,8 +403,8 @@ def render_teachers(data: Dict[str, List]) -> None:
 					full_name=full_name.strip(),
 					short_name=short_name.strip(),
 					seniority_level=int(seniority),
-					rank=rank,
-					max_hours_per_week=int(max_hours_week),
+					rank=add_teacher_rank,
+					max_hours_per_week=int(weekly_default),
 					max_hours_per_day=int(max_hours_day),
 					dept_name=dept_name.strip(),
 					preferred_time_slots=preferred_slots,
@@ -423,6 +425,16 @@ def render_teachers(data: Dict[str, List]) -> None:
 			edit_teacher = next((t for t in teachers if t.short_name == edit_teacher_code), None)
 
 			if edit_teacher:
+				updated_rank = st.selectbox(
+					"Rank (Update)",
+					list(RANK_LOADS.keys()),
+					index=list(RANK_LOADS.keys()).index(edit_teacher.rank)
+					if edit_teacher.rank in RANK_LOADS
+					else 0,
+					key=f"teacher_update_rank_{edit_teacher_code}",
+				)
+				updated_weekly_default, updated_daily_default = RANK_LOADS[updated_rank]
+				st.caption(f"Max Hours / Week (Update, Fixed by Rank): {int(updated_weekly_default)}")
 				with st.form("update_teacher_form"):
 					updated_full_name = st.text_input(
 						"Full Name (Update)",
@@ -439,14 +451,6 @@ def render_teachers(data: Dict[str, List]) -> None:
 						value=edit_teacher.dept_name,
 						key=f"teacher_update_dept_{edit_teacher_code}",
 					)
-					updated_rank = st.selectbox(
-						"Rank (Update)",
-						list(RANK_LOADS.keys()),
-						index=list(RANK_LOADS.keys()).index(edit_teacher.rank)
-						if edit_teacher.rank in RANK_LOADS
-						else 0,
-						key=f"teacher_update_rank_{edit_teacher_code}",
-					)
 					updated_seniority = st.number_input(
 						"Seniority Level (Update)",
 						min_value=1,
@@ -454,18 +458,11 @@ def render_teachers(data: Dict[str, List]) -> None:
 						value=int(edit_teacher.seniority_level),
 						key=f"teacher_update_seniority_{edit_teacher_code}",
 					)
-					updated_max_week = st.number_input(
-						"Max Hours / Week (Update)",
-						min_value=1,
-						step=1,
-						value=int(edit_teacher.max_hours_per_week),
-						key=f"teacher_update_week_{edit_teacher_code}",
-					)
 					updated_max_day = st.number_input(
 						"Max Hours / Day (Update)",
 						min_value=1,
 						step=1,
-						value=int(edit_teacher.max_hours_per_day),
+						value=int(updated_daily_default),
 						key=f"teacher_update_day_{edit_teacher_code}",
 					)
 					updated_pref_raw = st.text_input(
@@ -478,6 +475,16 @@ def render_teachers(data: Dict[str, List]) -> None:
 				if updated_submit:
 					if not updated_full_name.strip() or not updated_short_name.strip():
 						st.error("Full Name and Short Name are required.")
+					elif any(
+						t.short_name != edit_teacher.short_name
+						and t.rank == updated_rank
+						and int(t.seniority_level) == int(updated_seniority)
+						for t in teachers
+					):
+						st.error(
+							f"Seniority {int(updated_seniority)} is already used for rank {updated_rank}. "
+							"Choose a unique seniority level."
+						)
 					else:
 						preferred_slots = []
 						for token in [part.strip() for part in updated_pref_raw.split(",") if part.strip()]:
@@ -490,7 +497,7 @@ def render_teachers(data: Dict[str, List]) -> None:
 							short_name=updated_short_name.strip(),
 							seniority_level=int(updated_seniority),
 							rank=updated_rank,
-							max_hours_per_week=int(updated_max_week),
+							max_hours_per_week=int(updated_weekly_default),
 							max_hours_per_day=int(updated_max_day),
 							dept_name=updated_dept.strip(),
 							preferred_time_slots=preferred_slots,
@@ -999,11 +1006,16 @@ def render_generate_routine(data: Dict[str, List]) -> None:
 					sections,
 					course_assignments=assignments,
 				)
-				routine = generator.generate()
-				st.session_state.routine = routine
-				st.session_state.data_manager.save_routine(routine)
-				st.session_state.pdf_bytes = None
-				st.success("Routine generated successfully.")
+				candidate_routine = generator.generate()
+				if candidate_routine.conflicts:
+					st.error("Routine generation blocked. Resolve all conflicts before generating the routine.")
+					for conflict in candidate_routine.conflicts:
+						st.error(conflict)
+				else:
+					st.session_state.routine = candidate_routine
+					st.session_state.data_manager.save_routine(candidate_routine)
+					st.session_state.pdf_bytes = None
+					st.success("Routine generated successfully.")
 			except Exception as exc:
 				st.error(f"Failed to generate routine: {exc}")
 

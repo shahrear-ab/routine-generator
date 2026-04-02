@@ -94,12 +94,21 @@ class DataManager:
         """Add a teacher if short name doesn't already exist"""
         if any(t.short_name == teacher.short_name for t in teachers):
             return False
+        if any(t.rank == teacher.rank and t.seniority_level == teacher.seniority_level for t in teachers):
+            return False
         teachers.append(teacher)
         self.save_teachers(teachers)
         return True
     
     def update_teacher(self, updated: Teacher, teachers: List[Teacher], original_short_name: Optional[str] = None) -> bool:
         """Update an existing teacher"""
+        if any(
+            t.short_name != (original_short_name or updated.short_name)
+            and t.rank == updated.rank
+            and t.seniority_level == updated.seniority_level
+            for t in teachers
+        ):
+            return False
         lookup_short_name = original_short_name or updated.short_name
         for i, t in enumerate(teachers):
             if t.short_name == lookup_short_name:

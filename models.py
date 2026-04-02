@@ -103,7 +103,7 @@ class Teacher:
     """Represents a teacher"""
     full_name: str
     short_name: str
-    seniority_level: int  # Numeric rank (higher = more senior)
+    seniority_level: int  # Numeric priority within rank (lower = more senior, e.g., 1 > 2)
     rank: str  # "Professor", "Associate Prof", "Assistant Prof", "Lecturer"
     max_hours_per_week: int  # Depends on rank
     max_hours_per_day: int = 4
