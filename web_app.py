@@ -35,6 +35,226 @@ PAGES = [
 	"View Timetables",
 ]
 
+APP_STYLE = """
+<style>
+	:root {
+		--bg-light: #ffffff;
+		--bg-base: #ffffff;
+		--bg-accent: #eff8f3;
+		--panel: #ffffff;
+		--panel-light: #f9fcfb;
+		--ink-dark: #111111;
+		--ink-main: #111111;
+		--ink-muted: #666666;
+		--accent-primary: #22a055;
+		--accent-secondary: #1e8e47;
+		--accent-light: #a8e6c0;
+		--success: #22a055;
+		--border: #d8ebe3;
+		--shadow-sm: 0 2px 8px rgba(13, 40, 24, 0.08);
+		--shadow-md: 0 4px 16px rgba(13, 40, 24, 0.12);
+		--shadow-lg: 0 8px 24px rgba(13, 40, 24, 0.15);
+	}
+
+	.stApp {
+		background: #ffffff;
+		color: var(--ink-main);
+	}
+
+	.stAppHeader, .stAppToolbar {
+		background: transparent !important;
+	}
+
+	.nav-container {
+		display: flex;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+		padding: 1.2rem 1rem;
+		border-bottom: 3px solid var(--accent-primary);
+		margin-bottom: 2rem;
+		background: linear-gradient(90deg, rgba(34, 160, 85, 0.02) 0%, transparent 100%);
+		margin-left: -1rem;
+		margin-right: -1rem;
+	}
+
+	.nav-button {
+		padding: 0.65rem 1.4rem;
+		border-radius: 12px;
+		border: none;
+		font-weight: 700;
+		cursor: pointer;
+		background: var(--bg-accent);
+		color: var(--ink-main);
+		font-size: 0.95rem;
+		transition: all 0.25s ease;
+	}
+
+	.nav-button.active {
+		background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+		color: #ffffff;
+		box-shadow: var(--shadow-md);
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		letter-spacing: -0.01em;
+		color: var(--ink-dark);
+		font-weight: 700;
+	}
+
+	.block-container {
+		padding-top: 0.5rem;
+		padding-bottom: 2rem;
+	}
+
+	.stMetric {
+		background: var(--panel);
+		border: 2px solid var(--border);
+		border-radius: 16px;
+		padding: 1.2rem;
+		box-shadow: var(--shadow-sm);
+		transition: all 0.3s ease;
+	}
+
+	.stMetric:hover {
+		border-color: var(--accent-primary);
+		box-shadow: var(--shadow-md);
+	}
+
+	div[data-testid="stDataFrame"] {
+		background: var(--panel);
+		border: 2px solid var(--border);
+		border-radius: 16px;
+		padding: 1rem;
+		box-shadow: var(--shadow-sm);
+	}
+
+	.timetable-grid {
+		width: 100%;
+		table-layout: fixed;
+		border-collapse: collapse;
+		margin: 1.5rem 0;
+		font-size: 0.95rem;
+		background: var(--panel);
+		border: 2px solid var(--border);
+		border-radius: 12px;
+		overflow: hidden;
+		box-shadow: var(--shadow-md);
+	}
+
+	.timetable-grid th {
+		background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+		color: #ffffff;
+		font-weight: 700;
+		padding: 0.8rem 0.35rem;
+		text-align: center;
+		border: 1px solid var(--accent-secondary);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.timetable-grid td {
+		padding: 0.6rem;
+		border: 1px solid var(--border);
+		height: 78px;
+		min-height: 78px;
+		vertical-align: top;
+		font-size: 0.85rem;
+		overflow: hidden;
+	}
+
+	.timetable-grid tr:nth-child(even) {
+		background: rgba(34, 160, 85, 0.03);
+	}
+
+	.timetable-grid .time-slot-col {
+		background: var(--bg-accent);
+		font-weight: 700;
+		color: var(--accent-primary);
+		width: 76px;
+		max-width: 76px;
+		min-width: 76px;
+		white-space: nowrap;
+		text-align: center;
+		vertical-align: middle;
+		padding: 0.3rem 0.35rem;
+		font-size: 0.82rem;
+	}
+
+	.timetable-grid .slot-col {
+		width: auto;
+	}
+
+	.slot-cell {
+		height: 64px;
+		max-height: 64px;
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding-right: 2px;
+	}
+
+	.class-entry {
+		background: linear-gradient(135deg, rgba(34, 160, 85, 0.15) 0%, rgba(32, 206, 111, 0.08) 100%);
+		border-left: 4px solid var(--accent-primary);
+		padding: 0.5rem;
+		border-radius: 6px;
+		margin: 0.25rem 0;
+		font-size: 0.8rem;
+		color: #1a1a1a;
+		font-weight: 600;
+		box-shadow: 0 2px 6px rgba(34, 160, 85, 0.1);
+		line-height: 1.2;
+		word-wrap: break-word;
+		display: inline-block;
+		width: 98%;
+	}
+
+	.stButton > button {
+		border-radius: 10px;
+		padding: 0.6rem 1.2rem;
+		font-weight: 700;
+		transition: all 0.25s ease;
+	}
+
+	.stButton > button[kind="secondary"] {
+		background-color: var(--bg-accent);
+		color: var(--ink-main);
+		border: 2px solid var(--border);
+	}
+
+	.stButton > button[kind="primary"] {
+		background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+		color: #ffffff;
+	}
+
+	.stSelectbox, .stTextInput, .stNumberInput {
+		padding: 0.5rem;
+	}
+
+	.stAlert {
+		border-radius: 12px;
+		border-left: 5px solid var(--accent-primary);
+	}
+
+</style>
+"""
+
+
+def apply_app_styles() -> None:
+	st.markdown(APP_STYLE, unsafe_allow_html=True)
+
+
+def _render_horizontal_navigation() -> str:
+	current_page = st.session_state.page if st.session_state.page in PAGES else PAGES[0]
+	cols = st.columns(len(PAGES))
+	for idx, page_name in enumerate(PAGES):
+		with cols[idx]:
+			button_style = "primary" if page_name == current_page else "secondary"
+			if st.button(page_name, key=f"nav_{page_name}", type=button_style, use_container_width=True):
+				st.session_state.page = page_name
+				st.rerun()
+	return current_page
+
 
 def _time_to_minutes(value: str) -> int:
 	h, m = map(int, value.split(":"))
@@ -226,39 +446,57 @@ def _split_assignment_section_target(section_name: str, valid_sections: List[str
 
 
 def render_dashboard(data: Dict[str, List]) -> None:
-	st.title("University Routine Generator")
-	st.caption("Web edition powered by Streamlit")
-
+	st.markdown("#### 📊 System Overview")
+	
+	st.divider()
+	
 	c1, c2, c3, c4 = st.columns(4)
-	c1.metric("Classrooms", len(data["classrooms"]))
-	c2.metric("Teachers", len(data["teachers"]))
-	c3.metric("Courses", len(data["courses"]))
-	c4.metric("Sections", len(data["sections"]))
+	c1.metric("🏛️ Classrooms", len(data["classrooms"]))
+	c2.metric("👨\u200d🏫 Teachers", len(data["teachers"]))
+	c3.metric("📚 Courses", len(data["courses"]))
+	c4.metric("👥 Sections", len(data["sections"]))
 
-	st.markdown("### Quick Actions")
+	st.divider()
+	
+	routine: Routine = st.session_state.routine
+	st.markdown("#### 📅 Current Routine Status")
+	if routine.entries:
+		rc1, rc2, rc3 = st.columns(3)
+		rc1.metric("✅ Scheduled Classes", len(routine.entries))
+		rc2.metric("⚠️ Conflicts", len(routine.conflicts))
+		rc3.metric("📋 Assignments", len(routine.course_assignments))
+	else:
+		st.warning("📭 No generated routine in memory yet. Use the **Generate Routine** page to create one.")
+
+	st.divider()
+
+	st.markdown("#### 🚀 Quick Actions")
 	a1, a2, a3, a4 = st.columns(4)
-	if a1.button("Add Classroom", use_container_width=True):
+	if a1.button("📍 Classrooms", use_container_width=True):
 		st.session_state.page = "Classrooms"
 		st.rerun()
-	if a2.button("Assign Courses", use_container_width=True):
+	if a2.button("🔗 Assign Courses", use_container_width=True):
 		st.session_state.page = "Assign Courses"
 		st.rerun()
-	if a3.button("Generate Routine", use_container_width=True):
+	if a3.button("⚙️ Generate Routine", use_container_width=True):
 		st.session_state.page = "Generate Routine"
 		st.rerun()
-	if a4.button("View Timetables", use_container_width=True):
+	if a4.button("📖 View Timetables", use_container_width=True):
 		st.session_state.page = "View Timetables"
 		st.rerun()
 
-	st.markdown("### Current Routine")
-	routine: Routine = st.session_state.routine
-	if routine.entries:
-		rc1, rc2, rc3 = st.columns(3)
-		rc1.metric("Scheduled Classes", len(routine.entries))
-		rc2.metric("Conflicts", len(routine.conflicts))
-		rc3.metric("Assignments", len(routine.course_assignments))
-	else:
-		st.info("No generated routine is in memory yet. Use Generate Routine page.")
+	st.divider()
+	
+	st.markdown("#### ℹ️ System Information")
+	info_cols = st.columns(2)
+	with info_cols[0]:
+		st.caption("**Data Summary**")
+		st.caption(f"Total sections: {len(data['sections'])}")
+		st.caption(f"Available classrooms capacity: {sum(c.capacity for c in data['classrooms'])} seats")
+	with info_cols[1]:
+		st.caption("**Working Schedule**")
+		st.caption("📅 Monday – Friday, 8:00 AM – 5:00 PM")
+		st.caption("⏱️ Class durations: 1, 2, or 3 hours")
 
 
 def render_classrooms(data: Dict[str, List]) -> None:
@@ -1147,17 +1385,56 @@ def _cell_text(filter_type: str, entry) -> str:
 	return f"{entry.section_name}\n{entry.teacher_short_name}\n{entry.classroom_code}"
 
 
+def _render_timetable_grid(filtered_entries, filter_type: str) -> None:
+	"""Render a professional HTML/CSS timetable grid with time slots as columns and weekdays as rows."""
+	days_header = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+	slot_defs = _slot_label_and_minutes()
+	
+	# Build the grid structure - time slots as columns, days as rows
+	html_rows = []
+	html_rows.append('<thead><tr><th class="timetable-grid time-slot-col">Day</th>')
+	for slot_label, _, _ in slot_defs:
+		html_rows.append(f'<th class="timetable-grid slot-col">{slot_label}</th>')
+	html_rows.append('</tr></thead><tbody>')
+	
+	# Create a row for each day
+	for day in days_header:
+		html_rows.append('<tr>')
+		html_rows.append(f'<td class="timetable-grid time-slot-col">{day}</td>')
+		
+		# Create a column for each time slot
+		for slot_label, slot_start, slot_end in slot_defs:
+			matches = [
+				_cell_text(filter_type, entry)
+				for entry in filtered_entries
+				if entry.day == day
+				and _entry_overlaps_slot(entry.time_slot.start_time, entry.time_slot.end_time, slot_start, slot_end)
+			]
+			
+			cell_content = ""
+			for match in matches:
+				cell_content += f'<div class="class-entry">{match}</div>'
+			
+			html_rows.append(f'<td class="timetable-grid"><div class="slot-cell">{cell_content}</div></td>')
+		
+		html_rows.append('</tr>')
+	
+	html_rows.append('</tbody>')
+	html_table = '<table class="timetable-grid">' + ''.join(html_rows) + '</table>'
+	st.markdown(html_table, unsafe_allow_html=True)
+
+
 def render_view_timetables(data: Dict[str, List]) -> None:
-	st.header("View Timetables")
+	st.header("📅 View Timetables")
 	routine: Routine = st.session_state.routine
 
 	if not routine.entries:
-		st.info("No generated routine found. Go to Generate Routine page first.")
+		st.warning("📭 No generated routine found. Go to **Generate Routine** page first.")
 		return
 
 	filter_col, item_col = st.columns([1, 2])
 	with filter_col:
-		filter_type = st.selectbox("View By", ["Section", "Teacher", "Classroom", "Course"])
+		filter_type = st.selectbox("📊 View By", ["Section", "Teacher", "Classroom", "Course"])
 
 	with item_col:
 		if filter_type == "Section":
@@ -1170,46 +1447,30 @@ def render_view_timetables(data: Dict[str, List]) -> None:
 			items = [f"{c.title} ({c.short_code})" for c in data["courses"]]
 
 		if not items:
-			st.warning(f"No {filter_type.lower()} records available.")
+			st.warning(f"❌ No {filter_type.lower()} records available.")
 			return
 
-		selected_item = st.selectbox("Select Item", items)
+		selected_item = st.selectbox("🔍 Select Item", items)
 
 	filtered_entries = _filter_entries_for_view(routine, filter_type, selected_item)
 	if not filtered_entries:
-		st.warning("No scheduled classes for this selection.")
+		st.warning(f"⏰ No scheduled classes for {selected_item}.")
 		return
 
+	st.markdown("### 🕐 Weekly Timetable Grid")
+	st.caption("Time slots in columns, weekdays in rows")
+	_render_timetable_grid(filtered_entries, filter_type)
+
+	st.markdown("### 📋 Detailed Schedule Entries")
 	days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-	slot_defs = _slot_label_and_minutes()
-	grid_rows: List[Dict[str, str]] = []
-
-	for slot_label, slot_start, slot_end in slot_defs:
-		row = {"Time Slot": slot_label}
-		for day in days:
-			matches = [
-				_cell_text(filter_type, entry)
-				for entry in filtered_entries
-				if entry.day == day
-				and _entry_overlaps_slot(entry.time_slot.start_time, entry.time_slot.end_time, slot_start, slot_end)
-			]
-			row[day] = "\n\n".join(matches)
-		grid_rows.append(row)
-
-	st.markdown("### Timetable Grid")
-	grid_df = pd.DataFrame(grid_rows)
-	grid_df = grid_df.set_index("Time Slot")
-	st.dataframe(grid_df, use_container_width=True)
-
-	st.markdown("### Detailed Entries")
 	detail_rows = [
 		{
-			"Day": entry.day,
-			"Time": f"{entry.time_slot.start_time}-{entry.time_slot.end_time}",
-			"Section": entry.section_name,
-			"Course": entry.course_code,
-			"Teacher": entry.teacher_short_name,
-			"Classroom": entry.classroom_code,
+			"🗓️ Day": entry.day,
+			"⏱️ Time": f"{entry.time_slot.start_time}-{entry.time_slot.end_time}",
+			"📚 Section": entry.section_name,
+			"📖 Course": entry.course_code,
+			"👨‍🏫 Teacher": entry.teacher_short_name,
+			"🏛️ Classroom": entry.classroom_code,
 		}
 		for entry in sorted(
 			filtered_entries,
@@ -1221,13 +1482,13 @@ def render_view_timetables(data: Dict[str, List]) -> None:
 
 def main() -> None:
 	ensure_state()
+	apply_app_styles()
 	show_missing_file_notice()
 
-	with st.sidebar:
-		st.title("Navigation")
-		default_index = PAGES.index(st.session_state.page) if st.session_state.page in PAGES else 0
-		page = st.radio("Go to", PAGES, index=default_index)
-		st.session_state.page = page
+	st.title("📅 University Routine Generator")
+	st.caption("Automated class scheduling system")
+
+	page = _render_horizontal_navigation()
 
 	data = load_data()
 
