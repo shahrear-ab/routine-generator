@@ -11,7 +11,7 @@ import random
 class RoutineGenerator:
     """Generates class routines with conflict detection and prioritization"""
     
-    DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    DAYS_OF_WEEK = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday"]
     WORKING_HOURS = ("08:00", "17:00")  # 8 AM to 5 PM
     BREAK_START = "13:30"
     BREAK_END = "14:00"

@@ -16,15 +16,13 @@ from models import Routine, Course, Teacher, Classroom, Section, RoutineEntry, T
 class PDFGenerator:
     """Generates PDF documents from routine data"""
 
-    DAYS_ORDER = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    DAYS_ORDER = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday"]
     DAY_SHORT = {
         "Saturday": "Sa",
         "Sunday": "Su",
         "Monday": "Mo",
         "Tuesday": "Tu",
         "Wednesday": "We",
-        "Thursday": "Th",
-        "Friday": "Fr",
     }
     
     def __init__(self, routine: Routine, courses: List[Course], 
@@ -347,7 +345,7 @@ class PDFGenerator:
             return story
         
         # Group by day
-        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday"]
         for day in days:
             day_entries = [e for e in entries if e.day == day]
             if day_entries:
@@ -369,7 +367,7 @@ class PDFGenerator:
             return story
         
         # Group by day
-        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday"]
         total_hours = sum(e.time_slot.duration_hours() for e in entries)
         story.append(Paragraph(f"Total Hours: {total_hours}", ParagraphStyle('Normal', fontSize=9)))
         story.append(Spacer(1, 0.05*inch))
@@ -395,7 +393,7 @@ class PDFGenerator:
             return story
         
         # Group by day
-        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday"]
         for day in days:
             day_entries = [e for e in entries if e.day == day]
             if day_entries:
@@ -417,7 +415,7 @@ class PDFGenerator:
             return story
         
         # Group by day
-        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday"]
         for day in days:
             day_entries = [e for e in entries if e.day == day]
             if day_entries:

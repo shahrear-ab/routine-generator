@@ -24,15 +24,13 @@ RANK_LOADS = {
 
 ROOM_TYPES = ["General Classroom", "Theory Lab", "Computer Lab"]
 
-ASSIGN_DAY_OPTIONS = ["No Preference", "Sa", "Sun", "Mo", "Tu", "We", "Th", "Fr"]
+ASSIGN_DAY_OPTIONS = ["No Preference", "Sa", "Sun", "Mo", "Tu", "We"]
 ASSIGN_DAY_TO_FULL = {
 	"Sa": "Saturday",
 	"Sun": "Sunday",
 	"Mo": "Monday",
 	"Tu": "Tuesday",
 	"We": "Wednesday",
-	"Th": "Thursday",
-	"Fr": "Friday",
 }
 ASSIGN_DAY_FROM_FULL = {v: k for k, v in ASSIGN_DAY_TO_FULL.items()}
 PREFERRED_START_TIMES = ["No Preference", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]
@@ -282,6 +280,7 @@ def _slot_label_and_minutes() -> List[Tuple[str, int, int]]:
 		("4th (11:00-11:50)", _time_to_minutes("11:00"), _time_to_minutes("11:50")),
 		("5th (12:00-12:50)", _time_to_minutes("12:00"), _time_to_minutes("12:50")),
 		("6th (13:00-13:30)", _time_to_minutes("13:00"), _time_to_minutes("13:30")),
+		("Break (13:30-14:00)", _time_to_minutes("13:30"), _time_to_minutes("14:00")),
 		("7th (14:00-14:50)", _time_to_minutes("14:00"), _time_to_minutes("14:50")),
 		("8th (15:00-15:50)", _time_to_minutes("15:00"), _time_to_minutes("15:50")),
 		("9th (16:00-16:50)", _time_to_minutes("16:00"), _time_to_minutes("16:50")),
@@ -562,7 +561,7 @@ def render_dashboard(data: Dict[str, List]) -> None:
 		st.caption(f"Available classrooms capacity: {sum(c.capacity for c in data['classrooms'])} seats")
 	with info_cols[1]:
 		st.caption("**Working Schedule**")
-		st.caption("📅 Monday – Friday, 8:00 AM – 5:00 PM")
+		st.caption("📅 Saturday – Wednesday, 8:00 AM – 5:00 PM")
 		st.caption("⏱️ Class durations: 1, 2, or 3 hours")
 
 
@@ -1465,12 +1464,14 @@ def render_generate_routine(data: Dict[str, List]) -> None:
 
 
 def _get_section_items(sections: List[Section]) -> List[str]:
-	return [section.display_name for section in sections]
+	return [f"{section.short_code} | {section.full_name}" if section.full_name != section.short_code else section.short_code for section in sections]
 
 
 def _parse_section_code(display_value: str) -> str:
+	if " | " in display_value:
+		return display_value.split(" | ", 1)[0].strip()
 	if "(" in display_value and display_value.endswith(")"):
-		return display_value.split("(")[-1].rstrip(")")
+		return display_value.split("(")[-1].rstrip(")").strip()
 	return display_value
 
 
@@ -1516,7 +1517,7 @@ def _cell_text(filter_type: str, entry) -> str:
 
 def _render_timetable_grid(filtered_entries, filter_type: str) -> None:
 	"""Render a professional HTML/CSS timetable grid with time slots as columns and weekdays as rows."""
-	days_header = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+	days_header = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday"]
 	slot_defs = _slot_label_and_minutes()
 	
 	# Build the grid structure - time slots as columns, days as rows
@@ -1591,7 +1592,7 @@ def render_view_timetables(data: Dict[str, List]) -> None:
 	_render_timetable_grid(filtered_entries, filter_type)
 
 	st.markdown("### 📋 Detailed Schedule Entries")
-	days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+	days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday"]
 	detail_rows = [
 		{
 			"🗓️ Day": entry.day,

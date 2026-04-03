@@ -1,10 +1,10 @@
 {
   "entries": [
     {
-      "day": "Monday",
+      "day": "Saturday",
       "time_slot": {
-        "start_time": "10:00",
-        "end_time": "11:00"
+        "start_time": "12:00",
+        "end_time": "13:00"
       },
       "section_name": "EEE-C",
       "course_code": "PHY 105",
@@ -12,10 +12,10 @@
       "classroom_code": "ME-R-410"
     },
     {
-      "day": "Tuesday",
+      "day": "Sunday",
       "time_slot": {
-        "start_time": "10:00",
-        "end_time": "11:00"
+        "start_time": "16:00",
+        "end_time": "17:00"
       },
       "section_name": "EEE-C",
       "course_code": "PHY 105",
@@ -23,7 +23,7 @@
       "classroom_code": "ME-R-410"
     },
     {
-      "day": "Monday",
+      "day": "Saturday",
       "time_slot": {
         "start_time": "08:00",
         "end_time": "10:00"
@@ -34,10 +34,10 @@
       "classroom_code": "PHY-L-1"
     },
     {
-      "day": "Monday",
+      "day": "Saturday",
       "time_slot": {
-        "start_time": "12:00",
-        "end_time": "13:00"
+        "start_time": "16:00",
+        "end_time": "17:00"
       },
       "section_name": "CSE-B",
       "course_code": "MATH 163",
@@ -45,10 +45,10 @@
       "classroom_code": "ECE-R-311"
     },
     {
-      "day": "Tuesday",
+      "day": "Sunday",
       "time_slot": {
-        "start_time": "12:00",
-        "end_time": "13:00"
+        "start_time": "15:00",
+        "end_time": "16:00"
       },
       "section_name": "CSE-B",
       "course_code": "MATH 163",
@@ -56,10 +56,10 @@
       "classroom_code": "ECE-R-311"
     },
     {
-      "day": "Monday",
+      "day": "Saturday",
       "time_slot": {
-        "start_time": "10:00",
-        "end_time": "12:00"
+        "start_time": "14:00",
+        "end_time": "16:00"
       },
       "section_name": "CSE-B-S1",
       "course_code": "PHY 102",
@@ -67,10 +67,10 @@
       "classroom_code": "PHY-L-1"
     },
     {
-      "day": "Monday",
+      "day": "Saturday",
       "time_slot": {
-        "start_time": "11:00",
-        "end_time": "12:00"
+        "start_time": "08:00",
+        "end_time": "09:00"
       },
       "section_name": "CSE-A",
       "course_code": "ME 171",
@@ -78,10 +78,10 @@
       "classroom_code": "ME-R-410"
     },
     {
-      "day": "Tuesday",
+      "day": "Sunday",
       "time_slot": {
-        "start_time": "11:00",
-        "end_time": "12:00"
+        "start_time": "08:00",
+        "end_time": "09:00"
       },
       "section_name": "CSE-A",
       "course_code": "ME 171",
@@ -89,10 +89,10 @@
       "classroom_code": "ME-R-410"
     },
     {
-      "day": "Monday",
+      "day": "Saturday",
       "time_slot": {
-        "start_time": "09:00",
-        "end_time": "11:00"
+        "start_time": "15:00",
+        "end_time": "17:00"
       },
       "section_name": "CE-C",
       "course_code": "SHOP 170",
@@ -100,142 +100,142 @@
       "classroom_code": "CHE-L-1"
     },
     {
-      "day": "Monday",
-      "time_slot": {
-        "start_time": "12:00",
-        "end_time": "13:00"
-      },
-      "section_name": "ME-A",
-      "course_code": "ME 101",
-      "teacher_short_name": "AKM",
-      "classroom_code": "ME-R-510"
-    },
-    {
-      "day": "Tuesday",
-      "time_slot": {
-        "start_time": "10:00",
-        "end_time": "11:00"
-      },
-      "section_name": "ME-A",
-      "course_code": "ME 101",
-      "teacher_short_name": "AKM",
-      "classroom_code": "ME-R-510"
-    },
-    {
-      "day": "Monday",
-      "time_slot": {
-        "start_time": "14:00",
-        "end_time": "15:00"
-      },
-      "section_name": "ME-A",
-      "course_code": "MATH 161",
-      "teacher_short_name": "MAA",
-      "classroom_code": "ME-R-510"
-    },
-    {
-      "day": "Tuesday",
-      "time_slot": {
-        "start_time": "12:00",
-        "end_time": "13:00"
-      },
-      "section_name": "ME-A",
-      "course_code": "MATH 161",
-      "teacher_short_name": "MAA",
-      "classroom_code": "ME-R-510"
-    },
-    {
-      "day": "Monday",
+      "day": "Saturday",
       "time_slot": {
         "start_time": "16:00",
         "end_time": "17:00"
       },
-      "section_name": "CSE-A",
-      "course_code": "PHY 159",
-      "teacher_short_name": "NA",
-      "classroom_code": "ECE-R-107"
-    },
-    {
-      "day": "Tuesday",
-      "time_slot": {
-        "start_time": "08:00",
-        "end_time": "09:00"
-      },
-      "section_name": "CSE-A",
-      "course_code": "PHY 159",
-      "teacher_short_name": "NA",
-      "classroom_code": "ECE-R-107"
-    },
-    {
-      "day": "Monday",
-      "time_slot": {
-        "start_time": "14:00",
-        "end_time": "15:00"
-      },
-      "section_name": "CE-C",
-      "course_code": "ME 171",
-      "teacher_short_name": "MMH",
-      "classroom_code": "ECE-R-107"
-    },
-    {
-      "day": "Tuesday",
-      "time_slot": {
-        "start_time": "10:00",
-        "end_time": "11:00"
-      },
-      "section_name": "CE-C",
-      "course_code": "ME 171",
-      "teacher_short_name": "MMH",
-      "classroom_code": "ECE-R-107"
-    },
-    {
-      "day": "Monday",
-      "time_slot": {
-        "start_time": "14:00",
-        "end_time": "15:00"
-      },
-      "section_name": "EEE-A",
+      "section_name": "ME-A",
       "course_code": "ME 101",
-      "teacher_short_name": "MNH",
-      "classroom_code": "ME-R-511"
-    },
-    {
-      "day": "Tuesday",
-      "time_slot": {
-        "start_time": "14:00",
-        "end_time": "15:00"
-      },
-      "section_name": "EEE-A",
-      "course_code": "ME 101",
-      "teacher_short_name": "MNH",
+      "teacher_short_name": "AKM",
       "classroom_code": "ME-R-510"
     },
     {
-      "day": "Monday",
+      "day": "Sunday",
       "time_slot": {
-        "start_time": "12:00",
-        "end_time": "13:00"
+        "start_time": "16:00",
+        "end_time": "17:00"
       },
-      "section_name": "CE-C",
-      "course_code": "PHY 159",
-      "teacher_short_name": "MAB",
-      "classroom_code": "ECE-R-107"
+      "section_name": "ME-A",
+      "course_code": "ME 101",
+      "teacher_short_name": "AKM",
+      "classroom_code": "ME-R-510"
     },
     {
-      "day": "Tuesday",
+      "day": "Saturday",
       "time_slot": {
         "start_time": "11:00",
         "end_time": "12:00"
       },
+      "section_name": "ME-A",
+      "course_code": "MATH 161",
+      "teacher_short_name": "MAA",
+      "classroom_code": "ME-R-510"
+    },
+    {
+      "day": "Sunday",
+      "time_slot": {
+        "start_time": "14:00",
+        "end_time": "15:00"
+      },
+      "section_name": "ME-A",
+      "course_code": "MATH 161",
+      "teacher_short_name": "MAA",
+      "classroom_code": "ME-R-510"
+    },
+    {
+      "day": "Saturday",
+      "time_slot": {
+        "start_time": "14:00",
+        "end_time": "15:00"
+      },
+      "section_name": "CSE-A",
+      "course_code": "PHY 159",
+      "teacher_short_name": "NA",
+      "classroom_code": "ECE-R-107"
+    },
+    {
+      "day": "Sunday",
+      "time_slot": {
+        "start_time": "15:00",
+        "end_time": "16:00"
+      },
+      "section_name": "CSE-A",
+      "course_code": "PHY 159",
+      "teacher_short_name": "NA",
+      "classroom_code": "ECE-R-107"
+    },
+    {
+      "day": "Saturday",
+      "time_slot": {
+        "start_time": "14:00",
+        "end_time": "15:00"
+      },
+      "section_name": "CE-C",
+      "course_code": "ME 171",
+      "teacher_short_name": "MMH",
+      "classroom_code": "ME-R-510"
+    },
+    {
+      "day": "Sunday",
+      "time_slot": {
+        "start_time": "16:00",
+        "end_time": "17:00"
+      },
+      "section_name": "CE-C",
+      "course_code": "ME 171",
+      "teacher_short_name": "MMH",
+      "classroom_code": "ECE-R-107"
+    },
+    {
+      "day": "Saturday",
+      "time_slot": {
+        "start_time": "10:00",
+        "end_time": "11:00"
+      },
+      "section_name": "EEE-A",
+      "course_code": "ME 101",
+      "teacher_short_name": "MNH",
+      "classroom_code": "ME-R-510"
+    },
+    {
+      "day": "Sunday",
+      "time_slot": {
+        "start_time": "11:00",
+        "end_time": "12:00"
+      },
+      "section_name": "EEE-A",
+      "course_code": "ME 101",
+      "teacher_short_name": "MNH",
+      "classroom_code": "ME-R-510"
+    },
+    {
+      "day": "Saturday",
+      "time_slot": {
+        "start_time": "09:00",
+        "end_time": "10:00"
+      },
       "section_name": "CE-C",
       "course_code": "PHY 159",
       "teacher_short_name": "MAB",
       "classroom_code": "ECE-R-107"
     },
     {
-      "day": "Monday",
+      "day": "Sunday",
       "time_slot": {
-        "start_time": "10:00",
-        "end_time": "11:00"
+        "start_time": "12:00",
+        "end_time": "13:00"
+      },
+      "section_name": "CE-C",
+      "course_code": "PHY 159",
+      "teacher_short_name": "MAB",
+      "classroom_code": "ECE-R-107"
+    },
+    {
+      "day": "Saturday",
+      "time_slot": {
+        "start_time": "09:00",
+        "end_time": "10:00"
       },
       "section_name": "EEE-A",
       "course_code": "MATH 161",
@@ -243,7 +243,7 @@
       "classroom_code": "ME-R-510"
     },
     {
-      "day": "Tuesday",
+      "day": "Sunday",
       "time_slot": {
         "start_time": "12:00",
         "end_time": "13:00"
@@ -251,10 +251,10 @@
       "section_name": "EEE-A",
       "course_code": "MATH 161",
       "teacher_short_name": "AHB",
-      "classroom_code": "ME-R-511"
+      "classroom_code": "ME-R-510"
     },
     {
-      "day": "Monday",
+      "day": "Saturday",
       "time_slot": {
         "start_time": "09:00",
         "end_time": "10:00"
@@ -262,13 +262,13 @@
       "section_name": "CSE-A",
       "course_code": "CHEM 141",
       "teacher_short_name": "CKR",
-      "classroom_code": "ECE-R-107"
+      "classroom_code": "ME-R-511"
     },
     {
-      "day": "Tuesday",
+      "day": "Sunday",
       "time_slot": {
-        "start_time": "14:00",
-        "end_time": "15:00"
+        "start_time": "11:00",
+        "end_time": "12:00"
       },
       "section_name": "CSE-A",
       "course_code": "CHEM 141",
@@ -276,10 +276,10 @@
       "classroom_code": "ECE-R-107"
     },
     {
-      "day": "Monday",
+      "day": "Saturday",
       "time_slot": {
-        "start_time": "15:00",
-        "end_time": "17:00"
+        "start_time": "14:00",
+        "end_time": "16:00"
       },
       "section_name": "ME-C-S2",
       "course_code": "ME 172",
@@ -287,10 +287,10 @@
       "classroom_code": "ME-R-517"
     },
     {
-      "day": "Tuesday",
+      "day": "Saturday",
       "time_slot": {
-        "start_time": "09:00",
-        "end_time": "11:00"
+        "start_time": "10:00",
+        "end_time": "12:00"
       },
       "section_name": "CSE-A-S1",
       "course_code": "ME 172",
@@ -298,10 +298,10 @@
       "classroom_code": "ME-R-417"
     },
     {
-      "day": "Monday",
+      "day": "Saturday",
       "time_slot": {
-        "start_time": "15:00",
-        "end_time": "17:00"
+        "start_time": "11:00",
+        "end_time": "13:00"
       },
       "section_name": "EEE-A",
       "course_code": "CHEM 114",
@@ -309,18 +309,7 @@
       "classroom_code": "CHE-L-1"
     },
     {
-      "day": "Monday",
-      "time_slot": {
-        "start_time": "09:00",
-        "end_time": "10:00"
-      },
-      "section_name": "EEE-C",
-      "course_code": "CHEM 109",
-      "teacher_short_name": "NR",
-      "classroom_code": "ME-R-410"
-    },
-    {
-      "day": "Tuesday",
+      "day": "Saturday",
       "time_slot": {
         "start_time": "11:00",
         "end_time": "12:00"
@@ -328,13 +317,24 @@
       "section_name": "EEE-C",
       "course_code": "CHEM 109",
       "teacher_short_name": "NR",
+      "classroom_code": "ME-R-410"
+    },
+    {
+      "day": "Sunday",
+      "time_slot": {
+        "start_time": "08:00",
+        "end_time": "09:00"
+      },
+      "section_name": "EEE-C",
+      "course_code": "CHEM 109",
+      "teacher_short_name": "NR",
       "classroom_code": "ME-R-510"
     },
     {
-      "day": "Monday",
+      "day": "Saturday",
       "time_slot": {
-        "start_time": "09:00",
-        "end_time": "10:00"
+        "start_time": "12:00",
+        "end_time": "13:00"
       },
       "section_name": "CSE-B",
       "course_code": "EEE 159",
@@ -342,10 +342,10 @@
       "classroom_code": "ECE-R-311"
     },
     {
-      "day": "Tuesday",
+      "day": "Sunday",
       "time_slot": {
-        "start_time": "16:00",
-        "end_time": "17:00"
+        "start_time": "12:00",
+        "end_time": "13:00"
       },
       "section_name": "CSE-B",
       "course_code": "EEE 159",
@@ -353,10 +353,10 @@
       "classroom_code": "ECE-R-311"
     },
     {
-      "day": "Monday",
+      "day": "Sunday",
       "time_slot": {
-        "start_time": "15:00",
-        "end_time": "17:00"
+        "start_time": "10:00",
+        "end_time": "12:00"
       },
       "section_name": "EEE-C",
       "course_code": "EEE 160",
