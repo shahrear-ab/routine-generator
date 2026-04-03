@@ -13,6 +13,8 @@ class RoutineGenerator:
     
     DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     WORKING_HOURS = ("08:00", "17:00")  # 8 AM to 5 PM
+    BREAK_START = "13:30"
+    BREAK_END = "14:00"
     
     # Teacher load per rank (hours per week)
     TEACHER_LOADS = {
@@ -77,9 +79,24 @@ class RoutineGenerator:
                 if slot_end <= end_minutes:
                     start_str = f"{slot_start // 60:02d}:{slot_start % 60:02d}"
                     end_str = f"{slot_end // 60:02d}:{slot_end % 60:02d}"
-                    slots.append(TimeSlot(start_str, end_str))
+                    candidate = TimeSlot(start_str, end_str)
+                    if not self._crosses_break(candidate):
+                        slots.append(candidate)
         
         return slots
+
+    @staticmethod
+    def _time_to_minutes(value: str) -> int:
+        h, m = map(int, value.split(":"))
+        return h * 60 + m
+
+    def _crosses_break(self, time_slot: TimeSlot) -> bool:
+        """Return True when a class spans across the break window."""
+        start = self._time_to_minutes(time_slot.start_time)
+        end = self._time_to_minutes(time_slot.end_time)
+        break_start = self._time_to_minutes(self.BREAK_START)
+        break_end = self._time_to_minutes(self.BREAK_END)
+        return start < break_end and end > break_start
     
     def generate(self) -> Routine:
         """Generate the routine with conflict detection"""
@@ -126,6 +143,14 @@ class RoutineGenerator:
         # Process manual assignments first (each scheduled slot)
         for assignment in expanded_manual:
             for day, time_slot in assignment.scheduled_slots:
+                if self._crosses_break(time_slot):
+                    generation_messages.append(
+                        f"Break conflict: {assignment.section_name} - {assignment.course_code} on {day} "
+                        f"{time_slot.start_time}-{time_slot.end_time} crosses the break "
+                        f"{self.BREAK_START}-{self.BREAK_END}."
+                    )
+                    continue
+
                 # Find the course
                 course = next((c for c in self.courses if c.short_code == assignment.course_code), None)
                 if not course:
@@ -195,8 +220,22 @@ class RoutineGenerator:
                                 teacher_daily_hours[removed_entry.teacher_short_name].get(removed_entry.day, 0) - removed_duration
                             )
                     else:
+                        overlap_entries = self._collect_overlap_conflicts(
+                            assignment.section_name,
+                            teacher.short_name,
+                            suitable_classroom.short_code,
+                            day,
+                            time_slot,
+                        )
+                        overlap_text = "; ".join(
+                            f"{e.section_name} - {e.course_code} ({e.teacher_short_name}) "
+                            f"{e.time_slot.start_time}-{e.time_slot.end_time}"
+                            for e in overlap_entries
+                        )
                         generation_messages.append(
-                            f"Conflict for manual assignment: {assignment.section_name} - {assignment.course_code} on {day} at {time_slot.start_time}"
+                            f"Time overlap conflict: {assignment.section_name} - {assignment.course_code} "
+                            f"({teacher.short_name}) on {day} {time_slot.start_time}-{time_slot.end_time}. "
+                            f"Overlaps with: {overlap_text or 'existing scheduled class'}"
                         )
                 else:
                     if classroom_reason == "capacity":
@@ -543,6 +582,31 @@ class RoutineGenerator:
             self._remove_entry(entry)
 
         return True, removed_entries
+
+    def _collect_overlap_conflicts(
+        self,
+        section: str,
+        teacher: str,
+        classroom: str,
+        day: str,
+        time_slot: TimeSlot,
+    ) -> List[RoutineEntry]:
+        """Collect existing entries that block scheduling at this day/time."""
+        overlaps: List[RoutineEntry] = []
+        for entry in self.routine.entries:
+            if entry.day != day:
+                continue
+            if not entry.time_slot.overlaps_with(time_slot):
+                continue
+
+            teacher_conflict = entry.teacher_short_name == teacher
+            classroom_conflict = entry.classroom_code == classroom and entry.section_name != section
+            section_conflict = self._sections_overlap_conflict(entry.section_name, section)
+
+            if teacher_conflict or classroom_conflict or section_conflict:
+                overlaps.append(entry)
+
+        return overlaps
 
     def _find_suitable_classroom(self, section_name: str, course: Course,
                                  day: str, time_slot: TimeSlot,

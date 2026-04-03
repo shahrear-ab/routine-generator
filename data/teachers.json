@@ -181,5 +181,15 @@
     "max_hours_per_day": 4,
     "dept_name": "ME",
     "preferred_time_slots": []
+  },
+  {
+    "full_name": "Dr. Abdul Halim Bhuiyan",
+    "short_name": "AHB",
+    "seniority_level": 2,
+    "rank": "Associate Prof",
+    "max_hours_per_week": 18,
+    "max_hours_per_day": 4,
+    "dept_name": "Mathematics",
+    "preferred_time_slots": []
   }
 ]

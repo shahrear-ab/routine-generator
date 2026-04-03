@@ -24,6 +24,19 @@ RANK_LOADS = {
 
 ROOM_TYPES = ["General Classroom", "Theory Lab", "Computer Lab"]
 
+ASSIGN_DAY_OPTIONS = ["No Preference", "Sa", "Sun", "Mo", "Tu", "We", "Th", "Fr"]
+ASSIGN_DAY_TO_FULL = {
+	"Sa": "Saturday",
+	"Sun": "Sunday",
+	"Mo": "Monday",
+	"Tu": "Tuesday",
+	"We": "Wednesday",
+	"Th": "Thursday",
+	"Fr": "Friday",
+}
+ASSIGN_DAY_FROM_FULL = {v: k for k, v in ASSIGN_DAY_TO_FULL.items()}
+PREFERRED_START_TIMES = ["No Preference", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]
+
 PAGES = [
 	"Dashboard",
 	"Classrooms",
@@ -285,6 +298,45 @@ def _normalize_dept_name(dept_name: str) -> str:
 	return (dept_name or "").strip().lower()
 
 
+def _minutes_to_time(total_minutes: int) -> str:
+	h = total_minutes // 60
+	m = total_minutes % 60
+	return f"{h:02d}:{m:02d}"
+
+
+def _build_preferred_scheduled_slots(
+	preferred_day_abbr: str,
+	preferred_start_time: str,
+	course_duration_hours: int,
+) -> Tuple[List[Tuple[str, TimeSlot]], Optional[str]]:
+	if preferred_day_abbr == "No Preference" and preferred_start_time == "No Preference":
+		return [], None
+	if preferred_day_abbr == "No Preference" or preferred_start_time == "No Preference":
+		return [], "Select both Preferred Day and Preferred Time Slot, or keep both as No Preference."
+
+	day_full = ASSIGN_DAY_TO_FULL.get(preferred_day_abbr)
+	if not day_full:
+		return [], "Invalid preferred day selected."
+
+	start_minutes = _time_to_minutes(preferred_start_time)
+	end_minutes = start_minutes + (int(course_duration_hours) * 60)
+	break_start = _time_to_minutes("13:30")
+	break_end = _time_to_minutes("14:00")
+	if start_minutes < break_end and end_minutes > break_start:
+		return [], (
+			f"Preferred slot {preferred_start_time}-{_minutes_to_time(end_minutes)} crosses break (13:30-14:00). "
+			"Choose a slot that ends before break or starts after break."
+		)
+	if end_minutes > _time_to_minutes("17:00"):
+		return [], (
+			f"Preferred start time {preferred_start_time} is too late for a {int(course_duration_hours)} hour course. "
+			"Choose an earlier slot."
+		)
+
+	slot = TimeSlot(preferred_start_time, _minutes_to_time(end_minutes))
+	return [(day_full, slot)], None
+
+
 def ensure_state() -> None:
 	if "data_manager" not in st.session_state:
 		try:
@@ -423,6 +475,16 @@ def build_filtered_pdf_bytes(
 def assignment_table_rows(assignments: List[CourseAssignment]) -> List[Dict[str, str]]:
 	rows = []
 	for idx, assignment in enumerate(assignments):
+		preferred_text = "-"
+		if assignment.scheduled_slots:
+			first_day, first_slot = assignment.scheduled_slots[0]
+			abbr = ASSIGN_DAY_FROM_FULL.get(first_day, first_day[:2])
+			hh, mm = map(int, first_slot.start_time.split(":"))
+			display_h = hh % 12
+			if display_h == 0:
+				display_h = 12
+			preferred_text = f"{abbr}/{display_h}:{mm:02d}"
+
 		slot_text = ", ".join(
 			f"{day} {time_slot.start_time}-{time_slot.end_time}" for day, time_slot in assignment.scheduled_slots
 		)
@@ -434,6 +496,7 @@ def assignment_table_rows(assignments: List[CourseAssignment]) -> List[Dict[str,
 				"Teacher": assignment.teacher_short_name,
 				"Room": assignment.classroom_code or "Auto",
 				"Sessions/Week": assignment.sessions_per_week,
+				"Preferred Time": preferred_text,
 				"Manual Slots": slot_text,
 			}
 		)
@@ -1086,6 +1149,8 @@ def render_assign_courses(data: Dict[str, List]) -> None:
 
 			room_options = ["Auto Select"] + [room.short_code for room in classrooms]
 			room_choice = st.selectbox("Preferred Room", room_options)
+			preferred_day = st.selectbox("Preferred Day", ASSIGN_DAY_OPTIONS)
+			preferred_time = st.selectbox("Preferred Time Slot (start)", PREFERRED_START_TIMES)
 			sessions_per_week = st.number_input("Sessions per Week", min_value=1, max_value=7, step=1, value=1)
 			submitted = st.form_submit_button("Add Assignment", use_container_width=True)
 
@@ -1094,13 +1159,27 @@ def render_assign_courses(data: Dict[str, List]) -> None:
 			if subsection_mode != "All":
 				section_name = f"{section_choice}-{subsection_mode}"
 
+			selected_course = next((c for c in courses if c.short_code == course_choice), None)
+			if not selected_course:
+				st.error("Selected course not found.")
+				return
+
+			scheduled_slots, slot_error = _build_preferred_scheduled_slots(
+				preferred_day,
+				preferred_time,
+				int(selected_course.required_duration),
+			)
+			if slot_error:
+				st.error(slot_error)
+				return
+
 			assignment = CourseAssignment(
 				course_code=course_choice,
 				section_name=section_name,
 				teacher_short_name=teacher_choice,
 				classroom_code="" if room_choice == "Auto Select" else room_choice,
 				sessions_per_week=int(sessions_per_week),
-				scheduled_slots=[],
+				scheduled_slots=scheduled_slots,
 			)
 			if dm.add_course_assignment(assignment, assignments):
 				st.success("Assignment added successfully.")
@@ -1121,6 +1200,12 @@ def render_assign_courses(data: Dict[str, List]) -> None:
 			current = assignments[edit_idx]
 			section_codes = [s.short_code for s in sections]
 			default_base_section, default_sub = _split_assignment_section_target(current.section_name, section_codes)
+			default_preferred_day = "No Preference"
+			default_preferred_time = "No Preference"
+			if current.scheduled_slots:
+				first_day, first_slot = current.scheduled_slots[0]
+				default_preferred_day = ASSIGN_DAY_FROM_FULL.get(first_day, "No Preference")
+				default_preferred_time = first_slot.start_time if first_slot.start_time in PREFERRED_START_TIMES else "No Preference"
 
 			with st.form("assignment_update_form"):
 				update_section = st.selectbox(
@@ -1179,6 +1264,22 @@ def render_assign_courses(data: Dict[str, List]) -> None:
 					value=int(current.sessions_per_week),
 					key=f"assignment_update_sessions_{edit_idx}",
 				)
+				update_preferred_day = st.selectbox(
+					"Preferred Day (Update)",
+					ASSIGN_DAY_OPTIONS,
+					index=ASSIGN_DAY_OPTIONS.index(default_preferred_day)
+					if default_preferred_day in ASSIGN_DAY_OPTIONS
+					else 0,
+					key=f"assignment_update_day_{edit_idx}",
+				)
+				update_preferred_time = st.selectbox(
+					"Preferred Time Slot (start) (Update)",
+					PREFERRED_START_TIMES,
+					index=PREFERRED_START_TIMES.index(default_preferred_time)
+					if default_preferred_time in PREFERRED_START_TIMES
+					else 0,
+					key=f"assignment_update_time_{edit_idx}",
+				)
 
 				update_submit = st.form_submit_button("Update Assignment", use_container_width=True)
 
@@ -1197,13 +1298,27 @@ def render_assign_courses(data: Dict[str, List]) -> None:
 				if duplicate_exists:
 					st.error("Another assignment with the same section, course, and teacher already exists.")
 				else:
+					updated_course_obj = next((c for c in courses if c.short_code == update_course), None)
+					if not updated_course_obj:
+						st.error("Selected course not found.")
+						return
+
+					updated_slots, slot_error = _build_preferred_scheduled_slots(
+						update_preferred_day,
+						update_preferred_time,
+						int(updated_course_obj.required_duration),
+					)
+					if slot_error:
+						st.error(slot_error)
+						return
+
 					assignments[edit_idx] = CourseAssignment(
 						course_code=update_course,
 						section_name=updated_section_name,
 						teacher_short_name=update_teacher,
 						classroom_code="" if update_room == "Auto Select" else update_room,
 						sessions_per_week=int(update_sessions),
-						scheduled_slots=list(current.scheduled_slots),
+						scheduled_slots=updated_slots,
 					)
 					dm.save_course_assignments(assignments)
 					st.success("Assignment updated.")
