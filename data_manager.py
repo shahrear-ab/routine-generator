@@ -89,12 +89,24 @@ class DataManager:
         """Save teachers to file"""
         with open(self.teachers_file, 'w') as f:
             json.dump([t.to_dict() for t in teachers], f, indent=2)
+
+    @staticmethod
+    def _normalize_dept_name(dept_name: Optional[str]) -> str:
+        if not dept_name:
+            return ""
+        return dept_name.strip().lower()
     
     def add_teacher(self, teacher: Teacher, teachers: List[Teacher]) -> bool:
         """Add a teacher if short name doesn't already exist"""
         if any(t.short_name == teacher.short_name for t in teachers):
             return False
-        if any(t.rank == teacher.rank and t.seniority_level == teacher.seniority_level for t in teachers):
+        teacher_dept = self._normalize_dept_name(teacher.dept_name)
+        if any(
+            t.rank == teacher.rank
+            and t.seniority_level == teacher.seniority_level
+            and self._normalize_dept_name(t.dept_name) == teacher_dept
+            for t in teachers
+        ):
             return False
         teachers.append(teacher)
         self.save_teachers(teachers)
@@ -102,10 +114,12 @@ class DataManager:
     
     def update_teacher(self, updated: Teacher, teachers: List[Teacher], original_short_name: Optional[str] = None) -> bool:
         """Update an existing teacher"""
+        updated_dept = self._normalize_dept_name(updated.dept_name)
         if any(
             t.short_name != (original_short_name or updated.short_name)
             and t.rank == updated.rank
             and t.seniority_level == updated.seniority_level
+            and self._normalize_dept_name(t.dept_name) == updated_dept
             for t in teachers
         ):
             return False

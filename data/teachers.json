@@ -171,5 +171,15 @@
         "end_time": "10:50"
       }
     ]
+  },
+  {
+    "full_name": "Dr. Aloke Kumar Mozumder",
+    "short_name": "AKM",
+    "seniority_level": 3,
+    "rank": "Professor",
+    "max_hours_per_week": 16,
+    "max_hours_per_day": 4,
+    "dept_name": "ME",
+    "preferred_time_slots": []
   }
 ]

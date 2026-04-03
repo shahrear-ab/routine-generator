@@ -281,6 +281,10 @@ def _entry_overlaps_slot(start_time: str, end_time: str, slot_start: int, slot_e
 	return start < slot_end and slot_start < end
 
 
+def _normalize_dept_name(dept_name: str) -> str:
+	return (dept_name or "").strip().lower()
+
+
 def ensure_state() -> None:
 	if "data_manager" not in st.session_state:
 		try:
@@ -620,7 +624,7 @@ def render_teachers(data: Dict[str, List]) -> None:
 			full_name = st.text_input("Full Name")
 			short_name = st.text_input("Short Name")
 			dept_name = st.text_input("Department")
-			seniority = st.number_input("Seniority Level", min_value=1, step=1, value=1)
+			seniority = st.number_input("Seniority Level (for same dept.)", min_value=1, step=1, value=1)
 			max_hours_day = st.number_input("Max Hours / Day", min_value=1, step=1, value=daily_default)
 			preferred_raw = st.text_input("Preferred Slots (comma-separated: 1st,2nd,3rd)")
 			submitted = st.form_submit_button("Add Teacher", use_container_width=True)
@@ -628,8 +632,16 @@ def render_teachers(data: Dict[str, List]) -> None:
 		if submitted:
 			if not full_name.strip() or not short_name.strip():
 				st.error("Full Name and Short Name are required.")
-			elif any(t.rank == add_teacher_rank and int(t.seniority_level) == int(seniority) for t in teachers):
-				st.error(f"Seniority {int(seniority)} is already used for rank {add_teacher_rank}. Choose a unique seniority level.")
+			elif any(
+				t.rank == add_teacher_rank
+				and int(t.seniority_level) == int(seniority)
+				and _normalize_dept_name(t.dept_name) == _normalize_dept_name(dept_name)
+				for t in teachers
+			):
+				st.error(
+					f"Seniority {int(seniority)} is already used for rank {add_teacher_rank} "
+					f"in department '{dept_name.strip() or '(empty dept)'}'. Choose a unique seniority level for that department."
+				)
 			else:
 				preferred_slots = []
 				for token in [part.strip() for part in preferred_raw.split(",") if part.strip()]:
@@ -690,7 +702,7 @@ def render_teachers(data: Dict[str, List]) -> None:
 						key=f"teacher_update_dept_{edit_teacher_code}",
 					)
 					updated_seniority = st.number_input(
-						"Seniority Level (Update)",
+						"Seniority Level (for same dept.)",
 						min_value=1,
 						step=1,
 						value=int(edit_teacher.seniority_level),
@@ -717,11 +729,13 @@ def render_teachers(data: Dict[str, List]) -> None:
 						t.short_name != edit_teacher.short_name
 						and t.rank == updated_rank
 						and int(t.seniority_level) == int(updated_seniority)
+						and _normalize_dept_name(t.dept_name) == _normalize_dept_name(updated_dept)
 						for t in teachers
 					):
 						st.error(
-							f"Seniority {int(updated_seniority)} is already used for rank {updated_rank}. "
-							"Choose a unique seniority level."
+							f"Seniority {int(updated_seniority)} is already used for rank {updated_rank} "
+							f"in department '{updated_dept.strip() or '(empty dept)'}'. "
+							"Choose a unique seniority level for that department."
 						)
 					else:
 						preferred_slots = []

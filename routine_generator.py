@@ -325,14 +325,17 @@ class RoutineGenerator:
         return self.routine
     
     def _validate_unique_seniority_levels(self):
-        """Ensure seniority levels are unique within each rank."""
-        seen_by_rank: Dict[str, Set[int]] = {}
+        """Ensure seniority levels are unique within each rank and department."""
+        seen_by_rank_and_dept: Dict[Tuple[str, str], Set[int]] = {}
         for teacher in self.teachers:
-            seen = seen_by_rank.setdefault(teacher.rank, set())
+            dept = self._normalize_dept_name(teacher.dept_name)
+            key = (teacher.rank, dept)
+            seen = seen_by_rank_and_dept.setdefault(key, set())
             if teacher.seniority_level in seen:
+                dept_label = teacher.dept_name.strip() if teacher.dept_name else "(empty dept)"
                 self.routine.conflicts.append(
-                    f"Duplicate seniority level {teacher.seniority_level} found for rank {teacher.rank}. "
-                    f"Seniority levels should be unique within each rank."
+                    f"Duplicate seniority level {teacher.seniority_level} found for rank {teacher.rank} "
+                    f"in department {dept_label}. Seniority levels should be unique within the same rank and department."
                 )
             else:
                 seen.add(teacher.seniority_level)
