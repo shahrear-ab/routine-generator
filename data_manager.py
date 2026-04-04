@@ -13,15 +13,20 @@ class DataManager:
     """Manages all data persistence using JSON files"""
     
     def __init__(self, data_dir: str = "data"):
-        self.data_dir = data_dir
+        # Anchor relative data paths to this module so save/load does not depend on launch cwd.
+        if os.path.isabs(data_dir):
+            self.data_dir = data_dir
+        else:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            self.data_dir = os.path.join(base_dir, data_dir)
         self.ensure_data_dir_exists()
         
-        self.classrooms_file = os.path.join(data_dir, "classrooms.json")
-        self.teachers_file = os.path.join(data_dir, "teachers.json")
-        self.courses_file = os.path.join(data_dir, "courses.json")
-        self.sections_file = os.path.join(data_dir, "sections.json")
-        self.routine_file = os.path.join(data_dir, "routine.json")
-        self.assignments_file = os.path.join(data_dir, "course_assignments.json")
+        self.classrooms_file = os.path.join(self.data_dir, "classrooms.json")
+        self.teachers_file = os.path.join(self.data_dir, "teachers.json")
+        self.courses_file = os.path.join(self.data_dir, "courses.json")
+        self.sections_file = os.path.join(self.data_dir, "sections.json")
+        self.routine_file = os.path.join(self.data_dir, "routine.json")
+        self.assignments_file = os.path.join(self.data_dir, "course_assignments.json")
     
     def ensure_data_dir_exists(self):
         """Create data directory if it doesn't exist"""
